@@ -14,5 +14,3 @@ const getWordRepetitionMap = (text) => {
 }
 
 console.log(getWordRepetitionMap(text));
-
-module.export = getWordRepetitionMap;
