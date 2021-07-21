@@ -10,7 +10,9 @@ const getWordRepetitionMap = (text) => {
             wordsMap.set(word, 1);
         }
     })
-    return [...wordsMap]
+    return [...wordsMap];
 }
 
 console.log(getWordRepetitionMap(text));
+
+module.export = getWordRepetitionMap;
