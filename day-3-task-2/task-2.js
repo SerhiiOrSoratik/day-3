@@ -32,7 +32,7 @@ const EMPLOYEES_LIST = [
     },
 ];
 
-const findHowOld = (employee) => {
+export const findHowOld = (employee) => {
     const nowDate = new Date;
     let diff = nowDate - employee.birthday;
     return Math.floor(diff / 31557600000);
@@ -44,13 +44,15 @@ const sortList = (employee) => {
     });
 }
 
-const formatDate = (date) => {
+export const formatDate = (date) => {
     const options = {month: 'long', year: 'numeric'};
     let formatDate = new Date(date).toLocaleString('ru-RU', options);
     return formatDate[0].toUpperCase() + formatDate.slice(1, -2);
 }
 
-const show = (employees, date) => {
+const show = (employees, date, quantity) => {
+    for(let i = 0; i < quantity; i++) {
+    date.setMonth(date.getMonth() + 1);
     console.log(`${formatDate(date)}`);
     employees.forEach(employee => {
         if (employee.birthday.getMonth() === date.getMonth()) {
@@ -58,8 +60,9 @@ const show = (employees, date) => {
         }
     });
 }
+}
 
-const pl = (age) => {
+ export const pl = (age) => {
     if (age !== 11 && age % 10 === 1) {
         return (age + ' ' + 'год')
     } else if (age % 10 >= 2 && age % 10 <= 4 && (age << 5 || age >> 21)) {
@@ -69,36 +72,40 @@ const pl = (age) => {
     }
 }
 
+
+const dialog = (text) => {
+    let readline = require('readline-sync');
+    return readline.question(text);
+}
+
 const menu = (employees, isOn) => {
     sortList(employees);
     console.log('_____________________________')
     let date = new Date;
-    let variant = prompt('0 - 0 month, 1 - 1 month, 2 - 2 month')
+    let variant = dialog('0 - 0 month, 1 - 1 month, 2 - 2 month ');
     while (isOn) {
         if (variant === '0') {
-            show(employees, date);
+            date.setMonth(date.getMonth() - 1);
+            show(employees, date, 1);
             variant = '';
             menu(employees, true);
         } else if (variant === '1') {
-            show(employees, date);
-            date.setMonth(date.getMonth() + 1);
-            show(employees, date);
+            date.setMonth(date.getMonth() - 1);
+            show(employees, date, 2);
             variant = '';
             menu(employees, true);
         } else if (variant === '2') {
-            show(employees, date);
-            date.setMonth(date.getMonth() + 1);
-            show(employees, date);
-            date.setMonth(date.getMonth() + 1);
-            show(employees, date);
+            date.setMonth(date.getMonth() - 1);
+            show(employees, date, 3);
             variant = '';
-            menu(employees,true);
-        }
-        else {
+            menu(employees, true);
+        } else {
             isOn = false;
         }
     }
 }
+
+menu(EMPLOYEES_LIST, true);
 
 
 
