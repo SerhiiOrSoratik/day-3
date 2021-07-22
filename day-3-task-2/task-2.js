@@ -32,7 +32,7 @@ const EMPLOYEES_LIST = [
     },
 ];
 
-export const findHowOld = (employee) => {
+ const findHowOld = (employee) => {
     const nowDate = new Date;
     let diff = nowDate - employee.birthday;
     return Math.floor(diff / 31557600000);
@@ -44,7 +44,7 @@ const sortList = (employee) => {
     });
 }
 
-export const formatDate = (date) => {
+ const formatDate = (date) => {
     const options = {month: 'long', year: 'numeric'};
     let formatDate = new Date(date).toLocaleString('ru-RU', options);
     return formatDate[0].toUpperCase() + formatDate.slice(1, -2);
@@ -56,13 +56,13 @@ const show = (employees, date, quantity) => {
     console.log(`${formatDate(date)}`);
     employees.forEach(employee => {
         if (employee.birthday.getMonth() === date.getMonth()) {
-            console.log('(' + employee.birthday.getDate() + ') - ' + employee.name + ' (' + pl(findHowOld(employee)) + ')');
+            console.log('(' + employee.birthday.getDate() + ') - ' + employee.name + employee.surname + ' (' + pl(findHowOld(employee)) + ')');
         }
     });
 }
 }
 
- export const pl = (age) => {
+ const pl = (age) => {
     if (age !== 11 && age % 10 === 1) {
         return (age + ' ' + 'год')
     } else if (age % 10 >= 2 && age % 10 <= 4 && (age << 5 || age >> 21)) {
@@ -105,7 +105,36 @@ const menu = (employees, isOn) => {
     }
 }
 
-menu(EMPLOYEES_LIST, true);
+const readCsvFile = (path) => {
+    const fs = require("fs");
+    let fileContent = fs.readFileSync(path, 'utf-8');
+    return parseDataFromCsvFile(fileContent);
+}
+
+const parseDataFromCsvFile = (fileContent) => {
+    let employeesList = [];
+    fileContent = fileContent.toString().split('\n');
+    let headers = fileContent.shift().split(',');
+    fileContent.map(elem => {
+        let elementArray = elem.split(',');
+        let tempEmployeeData = {};
+        headers.map((header, index) => {
+            tempEmployeeData[header.trim()] = elementArray[index];
+        });
+        employeesList.push(tempEmployeeData);
+    });
+    employeesList = correctDate(employeesList);
+    return employeesList;
+}
+
+const correctDate = (employeesList) => {
+    employeesList.map(employee => {
+        employee.birthday = new Date(employee.birthday);
+    })
+    return employeesList;
+}
+
+menu(readCsvFile(process.argv[2]), true);
 
 
 

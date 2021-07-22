@@ -29,7 +29,7 @@ describe('function pl', () => {
 });
 
 describe('function formatDate', () => {
-    it('return', () => {
+    it('return formatDate', () => {
         expect(formatDate(birth)).toBe('July 20')
     });
 
